@@ -16,11 +16,12 @@ from flask_login import (
 from db.db import init_db_command
 from db.user import User
 
-# # Naive database setup
+# Naive database setup
 # try:
 #     init_db_command()
 # except sqlite3.OperationalError:
 #     print ('Error in initializing database.')
+
 
 if __name__ == "__main__":
     # Flask app setup
@@ -31,7 +32,6 @@ if __name__ == "__main__":
     # https://flask-login.readthedocs.io/en/latest
     login_manager = LoginManager()
     login_manager.init_app(app)
-
 
     # Flask-Login helper to retrieve a user from our db
     @login_manager.user_loader
