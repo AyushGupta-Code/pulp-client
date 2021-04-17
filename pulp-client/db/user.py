@@ -33,3 +33,14 @@ class User(UserMixin):
             (id_, name, email, profile_pic, address),
         )
         db.commit()
+    
+    @staticmethod
+    def update(id_, address):
+        db = get_db()
+        db.execute(
+            "UPDATE user "
+            "SET address = ? "
+            "WHERE id = ? ",
+            (address, id_),
+        )
+        db.commit()
