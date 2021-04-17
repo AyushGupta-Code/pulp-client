@@ -7,6 +7,7 @@ from flask import Flask
 from handlers.homepage import homepage
 from handlers.login import loginpage
 from handlers.logout import logoutpage
+from handlers.user import userpage
 
 # Third-party libraries
 from flask_login import (
@@ -38,9 +39,11 @@ if __name__ == "__main__":
     def load_user(user_id):
         return User.get(user_id)
 
+    #register different parts of your website from different files
     app.register_blueprint(homepage)
     app.register_blueprint(loginpage)
     app.register_blueprint(logoutpage)
+    app.register_blueprint(userpage)
     app.run(ssl_context="adhoc")
 
 
