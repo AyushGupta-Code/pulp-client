@@ -87,4 +87,6 @@ def callback():
     login_user(user)
 
     # Send user back to homepage
-    return redirect(url_for("homepage.index"))
+    return redirect("/dashboard/users/" + unique_id)
+    
+
