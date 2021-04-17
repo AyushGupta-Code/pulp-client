@@ -31,7 +31,7 @@ def init_db():
         )
     db.row_factory = sqlite3.Row
 
-    with open("db/schema.sql") as f:
+    with open("schema.sql") as f:
         db.executescript(f.read())
 
 @click.command("init-db")
