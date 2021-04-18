@@ -11,7 +11,6 @@ userpage = Blueprint('userpage', __name__, template_folder='templates')
 
 # userid is a variable and "users" is constant
 @userpage.route("/dashboard/users/<userid>", methods=['GET'])
-
 def get(userid):
     #here the user is verified and we have his address as well
     if current_user.is_authenticated and current_user.address :
@@ -19,8 +18,9 @@ def get(userid):
             "<p>Hello, {}! You're logged in! Email: {} Address: {}</p>"
             "<div><p>Google Profile Picture:</p>"
             '<img src="{}" alt="Google profile pic"></img></div>'
-            '<a class="button" href="/logout">Logout</a>'.format(
-                current_user.name, current_user.email, current_user.address, current_user.profile_pic
+            '<a class="button" href="/logout">Logout</a>'
+            '''<p><button onclick="window.location.href='/dashboard/users/{}/orders'">Show Orders</button></p>'''.format(
+                current_user.name, current_user.email, current_user.address, current_user.profile_pic, current_user.id
             
             )
         )
@@ -38,10 +38,6 @@ def get(userid):
     #here if we have nither authenticated user or address (cant have address if you dont have authenticated user)
     else :
         return redirect("/")
-        
-        
-    
-
 
 # userid is a variable and "users" is constant
 @login_required
@@ -50,12 +46,3 @@ def update(userid):
     address = request.form['address']
     User.update(userid, address)
     return redirect("/dashboard/users/" + current_user.id)
-
-
-
-
-
-    
-
-
-
