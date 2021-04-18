@@ -15,12 +15,12 @@ class Order(UserMixin) :
     def get(user_id) : 
         db = get_db()
         orders = db.execute(
-            "SELECT * FROM orders INNER JOIN shop ON orders.shopid = shop.id WHERE orders.userid = ?", (user_id,)
+            "SELECT orders.orderid, shop.shop_name, orders.file  FROM orders INNER JOIN shop ON orders.shopid = shop.shopid WHERE orders.userid = ?", (user_id,)
         ).fetchall()
         if not orders:
             return None
         
-        return orders_list
+        return orders
 
     @staticmethod
     def create(orderid, status, image_file, shopid, user_id) :
@@ -35,9 +35,14 @@ class Order(UserMixin) :
     @staticmethod
     def get_order(orderid):
         db = get_db()
-        order = db.execute(
-            "SELECT order.status, order.file, shop.name, shop.address FROM  orders INNER JOIN shop ON shop.shopid = orders.shopid  WHERE orders.orderid = ?",(orderid)
+        orders = db.execute(
+            '''SELECT orders.status, orders.file, shop.shop_name, shop.shop_address 
+            FROM  orders 
+            INNER JOIN shop 
+            ON shop.shopid = orders.shopid  
+            WHERE orders.orderid = ?''', (orderid,)
         ).fetchone()
 
-        return order
+        return orders
 
+    
