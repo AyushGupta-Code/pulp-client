@@ -34,6 +34,7 @@ class User(UserMixin):
         )
         db.commit()
     
+    #this is where we update the address to the specefic user 
     @staticmethod
     def update(id_, address):
         db = get_db()
