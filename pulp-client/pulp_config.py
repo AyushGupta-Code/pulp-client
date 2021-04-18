@@ -10,3 +10,5 @@ GOOGLE_DISCOVERY_URL = (
 
 # OAuth 2 client setup
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
+
+UPLOAD_FOLDER = '/home/desmond/Desktop/uploaded_images'
