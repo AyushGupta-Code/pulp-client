@@ -5,6 +5,7 @@ from flask_login import current_user
 from werkzeug.utils import secure_filename
 from pulp_config import UPLOAD_FOLDER
 from db.shop import Shop
+from base64 import b64encode
 from db.orders import Order
 import os
 import random
@@ -16,16 +17,46 @@ orderpage = Blueprint('orderpage', __name__, template_folder='templates')
 @login_required
 @orderpage.route("/dashboard/users/<userid>/orders", methods=['GET'])
 def get_all(userid):
-    return ( 
-        '''<p><button onclick="window.location.href='/dashboard/users/{}/orders/new'">Create New Order</button></p>'''.format(userid)
-    )
+    
+    create_order_button = '''<p><center><button onclick="window.location.href='/dashboard/users/{}/orders/new'">Create New Order</button></center></p>'''.format(userid)
+
+    orders_list = Order.get(userid)
+
+    if orders_list == None :
+        return create_order_button
+    
+    table = '''<table style="width:100%">
+            <tr>
+                <th>Orderid</th>
+                <th>Shopname</th>
+                <th>File</th>
+                <p></p>
+            </tr>'''
+
+    table_details = ""
+
+    for order in orders_list : 
+        table_row = '''<tr>
+        <td><center><a href = "/dashboard/users/{}/orders/{}">{}</a></center></td>
+        <td><center>{}</center></td>
+        <td><center><img src="data:image/png;base64, {}" width="100" height="100"  alt="Order Image" /><center></td>
+        </tr>'''.format(userid, order[0], order[0], order[1], convertToBase64(order[2]) )
+        table_details += table_row
+    
+    logout_button = '<center><a class="button" href="/logout">Logout</a></center>'
+    close_table = '</table>'
+    
+    
+    
+    return table + table_details + close_table + create_order_button + logout_button
+
 
 @login_required    
 @orderpage.route("/dashboard/users/<userid>/orders/new", methods=['GET'])    
 def create_new(userid):
     shops = Shop.get_all()
 
-    form = '''<form method="post" enctype="multipart/form-data" action = '/dashboard/users/{}/orders' >
+    form = '''<center><form method="post" enctype="multipart/form-data" action = '/dashboard/users/{}/orders'>
            <div>'''.format(userid)
 
     file_selector = '''<p><label for="file">Choose file to upload</label></p>
@@ -35,7 +66,9 @@ def create_new(userid):
                     <div>
                     <button>Submit</button>
                     </div>
-                    </form>''' 
+                    </form>
+                    <a class="button" href="/logout">Logout</a>
+                    </center>''' 
 
     all_options = ""
     for shop in shops :
@@ -66,15 +99,24 @@ def create(userid):
     return redirect("/dashboard/users/{}/orders/{}".format(userid, orderid))
 
 
-# @orderpage.route("/dashboard/users/<userid>/orders/<orderid>", methods=['GET'])
-# def get(userid, orderid) :
-#     order=Order.get_order(orderid)
+@login_required
+@orderpage.route("/dashboard/users/<userid>/orders/<orderid>", methods=['GET'])
+def get(userid, orderid) :
     
+    order_details = Order.get_order(orderid)
 
+    # return_this = '''<form method="get" enctype="multipart/form-data action = '/dashboard/users/{}/orders/{}'>'''.format(userid, orderid)
 
-
-#     #make a html page that returns file(image),shop name, orderid
-#     return "Order Values"
+    order_html =  ''' 
+                    <center><p><b> Orderid : {} </b></p>
+                    <p><b> Your Order : <br/> <img src="data:image/png;base64, {}" alt="Order Image" /></p></b>
+                    <p><b> Status : {} </p></b>
+                    <p><b> Shop : {} </p></b>
+                    <button onclick="window.location.href='/dashboard/users/{}/orders'"> Show all Orders </button>
+                    <p><a class="button" href="/logout">Logout</a></p></center>'''.format(
+                        orderid, convertToBase64(order_details[1]),  order_details[0], order_details[2] + "," + order_details[3], userid)
+    
+    return order_html
     
 
 
@@ -85,4 +127,7 @@ def convertToBinaryData(filename):
     return blobData
 
 
+def convertToBase64(image_blob) :
+    enc_image = b64encode(image_blob)
 
+    return enc_image.decode('utf-8')
