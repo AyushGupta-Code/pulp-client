@@ -10,7 +10,7 @@ homepage = Blueprint('homepage', __name__, template_folder='templates')
 def index():
     if not current_user.is_authenticated:
         
-        return '''<div class="col s12 m6 offset-m3 center-align">
+        return '''<div top: 50%; class="col s12 m6 offset-m3 center-align">
     <a class="oauth-container btn darken-4 white black-text" href="/login" style="text-transform:none">
         <div class="left">
             <img width="20px" style="margin-top:7px; margin-right:8px" alt="Google sign-in" 
