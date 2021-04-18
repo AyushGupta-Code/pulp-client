@@ -8,6 +8,7 @@ from handlers.homepage import homepage
 from handlers.login import loginpage
 from handlers.logout import logoutpage
 from handlers.user import userpage
+from handlers.orders import orderpage
 
 # Third-party libraries
 from flask_login import (
@@ -44,6 +45,7 @@ if __name__ == "__main__":
     app.register_blueprint(loginpage)
     app.register_blueprint(logoutpage)
     app.register_blueprint(userpage)
+    app.register_blueprint(orderpage)
     app.run(ssl_context="adhoc")
 
 
